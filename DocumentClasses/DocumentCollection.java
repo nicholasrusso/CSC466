@@ -1,7 +1,9 @@
 package DocumentClasses;
 
 import javax.print.Doc;
-import java.io.Serializable;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -10,8 +12,9 @@ import java.util.stream.Collectors;
  */
 public class DocumentCollection implements Serializable {
     private HashMap<Integer, TextVector> documents;
+    private String dataPath;
     private int currentIndex = 1;
-
+    private int maxDocFreq = 0;
     public static  String noiseWordArray[] = {"a", "about", "above", "all", "along",
             "also", "although", "am", "an", "and", "any", "are", "aren't", "as", "at",
             "be", "because", "been", "but", "by", "can", "cannot", "could", "couldn't",
@@ -31,10 +34,55 @@ public class DocumentCollection implements Serializable {
             "which", "while", "who", "whom", "whose", "why", "with", "without",
             "would", "you", "your", "yours", "yes"};
 
-
     public DocumentCollection() {
         documents = new HashMap<>();
+    }
 
+    public void digestFile(String dataFilePath) {
+        if (!dataFilePath.equals(dataPath)) {
+            dataPath = dataFilePath;
+            processFile();
+        }
+
+    }
+
+    private void processFile() {
+        try {
+            int index = 0;
+            boolean body = false;
+
+            Iterator<String> tokenLists = Files.lines(Paths.get(dataPath)).collect(Collectors.toList()).iterator();
+
+
+            while (tokenLists.hasNext()) {
+                String[] curTokens = tokenLists.next().split(" ");
+                if (".I".equals(curTokens[0])) {
+                    index = Integer.parseInt(curTokens[1]);
+                }
+
+                if (".W".equals(curTokens[0])) {
+                    body = true;
+                }
+
+                while (body && tokenLists.hasNext()) {
+                    String line = tokenLists.next();
+                    String[] flagTokens = line.split(" ");
+                    String[] bodyTokens = line.split("[^a-zA-Z]+");
+                    if (".I".equals(flagTokens[0])) {
+                        System.out.println("Processed document: " + index);
+                        body = false;
+                        index = Integer.parseInt(flagTokens[1]);
+                    } else {
+                        TextVector newVector = new TextVector();
+                        Arrays.stream(bodyTokens).map(term -> term.toLowerCase()).filter(term -> !isNoiseWord(term)).forEach(term -> newVector.add(term));
+                        documents.put(index, newVector);
+                    }
+                }
+            }
+        }
+        catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
 
     }
 
@@ -76,6 +124,25 @@ public class DocumentCollection implements Serializable {
     public int getDocumentFrequency(String term) {
         return documents.values().stream().mapToInt(textVector -> textVector.contains(term) ? 1 : 0).sum();
     }
+
+    private void getMaxDocumentFrequency() {
+        maxDocFreq = getDocuments().stream().flatMap(textVector -> textVector.getRawVectorEntrySet().stream()).map(entry -> entry.getKey()).mapToInt(term -> getDocumentFrequency(term)).max().getAsInt();
+    }
+
+    public String getMostFrequentTerm() {
+        getMaxDocumentFrequency();
+        String mostFrequent = getDocuments().stream().flatMap(textVector -> textVector.getRawVectorEntrySet().stream()).map(entry -> entry.getKey()).filter(key -> getDocumentFrequency(key) == maxDocFreq).findFirst().get();
+        return mostFrequent;
+    }
+
+    public int getTotalDistinctWordCount() {
+        return getDocuments().stream().mapToInt(textVector -> textVector.getDistinctWordCount()).sum();
+    }
+
+    public int getTotalWordCount() {
+        return getDocuments().stream().mapToInt(textVector -> textVector.getTotalWordCount()).sum();
+    }
+
 
 }
 
