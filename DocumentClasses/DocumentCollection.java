@@ -34,16 +34,20 @@ public class DocumentCollection implements Serializable {
             "which", "while", "who", "whom", "whose", "why", "with", "without",
             "would", "you", "your", "yours", "yes"};
 
+    public DocumentCollection(String dataFilePath) {
+        documents = new HashMap<>();
+        digestFile(dataFilePath);
+    }
+
     public DocumentCollection() {
         documents = new HashMap<>();
     }
 
-    public void digestFile(String dataFilePath) {
+    private void digestFile(String dataFilePath) {
         if (!dataFilePath.equals(dataPath)) {
             dataPath = dataFilePath;
             processFile();
         }
-
     }
 
     private void processFile() {
@@ -69,7 +73,6 @@ public class DocumentCollection implements Serializable {
                     String[] flagTokens = line.split(" ");
                     String[] bodyTokens = line.split("[^a-zA-Z]+");
                     if (".I".equals(flagTokens[0])) {
-                        System.out.println("Processed document: " + index);
                         body = false;
                         index = Integer.parseInt(flagTokens[1]);
                     } else {
@@ -142,7 +145,5 @@ public class DocumentCollection implements Serializable {
     public int getTotalWordCount() {
         return getDocuments().stream().mapToInt(textVector -> textVector.getTotalWordCount()).sum();
     }
-
-
 }
 

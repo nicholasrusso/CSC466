@@ -15,10 +15,8 @@ import java.util.stream.Collectors;
 public class Lab1 {
 
     public static void main(String[] args) {
-        DocumentCollection dc = new DocumentCollection();
-        dc.digestFile("./labs/documents.txt");
+        DocumentCollection dc = new DocumentCollection("./labs/documents.txt");
         StringBuilder stringBuilder = new StringBuilder();
-
 
 
         stringBuilder.append("Word = " + dc.getMostFrequentTerm() + "\n");
@@ -30,9 +28,9 @@ public class Lab1 {
 
         try(ObjectOutputStream os = new ObjectOutputStream(new
                 FileOutputStream(new File("./files/docvector")))){
-            os.writeObject(dc);
+            os.writeObject(dc.getDocuments());
         } catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
         }
 
     }
