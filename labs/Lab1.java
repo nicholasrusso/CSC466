@@ -26,9 +26,8 @@ public class Lab1 {
 
         System.out.println(stringBuilder.toString());
 
-        try(ObjectOutputStream os = new ObjectOutputStream(new
-                FileOutputStream(new File("./files/docvector")))){
-            os.writeObject(dc.getDocuments());
+        try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File("./files/docvector")))){
+            os.writeObject(dc);
         } catch(Exception e){
             e.printStackTrace();
         }
