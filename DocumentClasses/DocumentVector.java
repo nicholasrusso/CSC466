@@ -26,11 +26,22 @@ public class DocumentVector extends TextVector {
 
     @Override
     public void normalize(DocumentCollection dc) {
-
         getRawVectorEntrySet().stream().forEach(termEntry -> {
-            double df = dc.getDocumentFrequency(termEntry.getKey());
-            double tfidf = getNormalizedFrequency(termEntry.getKey()) * Math.log(dc.getSize() / df);
-            normalizedVector.put(termEntry.getKey(), tfidf);
+            normalizedVector.put(termEntry.getKey(), TfIdf(termEntry, dc));
         });
+    }
+
+
+    private double TfIdf(Map.Entry<String, Integer> term, DocumentCollection dc) {
+        double df = dc.getDocumentFrequency(term.getKey());
+        double x = df > 0 ? dc.getSize() / df : 0;
+        return getNormalizedFrequency(term.getKey()) * log2(x);
+    }
+
+
+    private double log2(double x) {
+        if (x > 0) {return Math.log(x) / Math.log(2);}
+
+        return 0;
     }
 }
