@@ -6,17 +6,16 @@ import java.util.Map;
  * Created by cgels on 10/13/17.
  */
 public class OkapiDistance implements DocumentDistance {
+    // parameters given by lab specification
     private double k1 = 1.2;
-    private double b = .75;
+    private double b = 0.75;
     private double k2 = 100;
-    private double avgDocLength = 0;
-    private double N = 0;
 
     @Override
     public double findDistance(TextVector query, TextVector document, DocumentCollection documents) {
         double dist = 0.0;
-        N = documents.getSize();
-        avgDocLength = documents.getAverageDocumentLength();
+        int N = documents.getSize();
+        double avgDocLength = documents.getAverageDocumentLength();
 
         for (Map.Entry<String, Integer> qEntry : query.getRawVectorEntrySet()) {
 
