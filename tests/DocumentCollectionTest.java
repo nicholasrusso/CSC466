@@ -1,5 +1,8 @@
-package DocumentClasses;
+package tests;
 
+import DocumentClasses.DocumentCollection;
+import DocumentClasses.DocumentVector;
+import DocumentClasses.TextVector;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +16,7 @@ public class DocumentCollectionTest {
 
     @Before
     public void setup() {
-        docs = new DocumentCollection("document");
+        docs = new DocumentCollection(null,"document");
         docs.makeTextVector(new String[]{"test", "test", "rest", "test"});
         docs.makeTextVector(new String[]{"test", "zest", "quest", "zest"});
         docs.makeTextVector(new String[]{"test", "quest", "test", "rest"});

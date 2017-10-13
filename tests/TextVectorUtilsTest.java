@@ -1,5 +1,6 @@
-package DocumentClasses;
+package tests;
 
+import DocumentClasses.TextVectorUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
