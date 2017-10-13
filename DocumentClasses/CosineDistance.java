@@ -1,7 +1,6 @@
 package DocumentClasses;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by cgels on 9/19/17.
@@ -10,7 +9,8 @@ public class CosineDistance implements DocumentDistance {
 
     @Override
     public double findDistance(TextVector query, TextVector document, DocumentCollection documents) {
-        double QdotD = 0;
+        double QdotD = 0.0;
+
         for (Map.Entry<String, Double> qEntry : query.getNormalizedVectorEntrySet()) {
 
             for (Map.Entry<String, Double> dEntry : document.getNormalizedVectorEntrySet()) {

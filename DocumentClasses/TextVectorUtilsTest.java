@@ -4,16 +4,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by cgels on 10/11/17.
  */
-public class MapUtilsTest {
+public class TextVectorUtilsTest {
 
     @Test
     public void testSortByValueAscending() {
@@ -21,15 +18,15 @@ public class MapUtilsTest {
 
         Random random = new Random(System.currentTimeMillis());
         Map<String, Integer> testMap = new HashMap<>(1000);
-        for(int i = 0; i < 1000; ++i) {
-            testMap.put( "SomeString" + random.nextInt(), random.nextInt());
+        for (int i = 0; i < 1000; ++i) {
+            testMap.put("SomeString" + random.nextInt(), random.nextInt());
         }
 
-        testMap = MapUtils.sortByValueAscending(testMap);
+        testMap = TextVectorUtils.sortByValueAscending(testMap);
         Assert.assertEquals(1000, testMap.size());
 
         Integer previous = null;
-        for(Map.Entry<String, Integer> entry : testMap.entrySet()) {
+        for (Map.Entry<String, Integer> entry : testMap.entrySet()) {
             Assert.assertNotNull(entry.getValue());
             if (previous != null) {
                 Assert.assertTrue(entry.getValue() >= previous);
@@ -44,15 +41,15 @@ public class MapUtilsTest {
 
         Random random = new Random(System.currentTimeMillis());
         Map<String, Integer> testMap = new HashMap<>(1000);
-        for(int i = 0; i < 1000; ++i) {
-            testMap.put( "SomeString" + random.nextInt(), random.nextInt());
+        for (int i = 0; i < 1000; ++i) {
+            testMap.put("SomeString" + random.nextInt(), random.nextInt());
         }
 
-        testMap = MapUtils.sortByValueDescending(testMap);
+        testMap = TextVectorUtils.sortByValueDescending(testMap);
         Assert.assertEquals(1000, testMap.size());
 
         Integer previous = null;
-        for(Map.Entry<String, Integer> entry : testMap.entrySet()) {
+        for (Map.Entry<String, Integer> entry : testMap.entrySet()) {
             Assert.assertNotNull(entry.getValue());
             if (previous != null) {
                 Assert.assertTrue(entry.getValue() <= previous);

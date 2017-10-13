@@ -3,7 +3,6 @@ package DocumentClasses;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -38,7 +37,6 @@ public class DocumentVectorTest {
         vector3.add("test");
         vector3.add("best");
         vector3.add("pest");
-
 
 
         documents = new DocumentCollection("document");

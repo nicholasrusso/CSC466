@@ -11,13 +11,6 @@ import java.util.stream.Collectors;
  * Created by cgels on 9/14/17.
  */
 public class DocumentCollection implements Serializable {
-    private String vectorType;
-    private boolean useDocVec = true;
-    private HashMap<Integer, TextVector> documents;
-    private HashMap<String, Integer> docFreqs;
-    private String dataPath;
-    private int currentIndex = 1;
-    private int maxDocFreq = 0;
     public static String noiseWordArray[] = {"", "a", "about", "above", "all", "along",
             "also", "although", "am", "an", "and", "any", "are", "aren't", "as", "at",
             "be", "because", "been", "but", "by", "can", "cannot", "could", "couldn't",
@@ -36,6 +29,13 @@ public class DocumentCollection implements Serializable {
             "we", "were", "what", "when", "where", "whereby", "wherein", "whether",
             "which", "while", "who", "whom", "whose", "why", "with", "without",
             "would", "you", "your", "yours", "yes"};
+    private String vectorType;
+    private boolean useDocVec = true;
+    private HashMap<Integer, TextVector> documents;
+    private HashMap<String, Integer> docFreqs;
+    private String dataPath;
+    private int currentIndex = 1;
+    private int maxDocFreq = 0;
 
     public DocumentCollection(String vectorType) {
         this.vectorType = vectorType;
@@ -95,9 +95,8 @@ public class DocumentCollection implements Serializable {
                                 .map(term -> term.toLowerCase().trim())
                                 .filter(term -> !isNoiseWord(term) && term.length() > 1)
                                 .forEach(term -> newVector.add(term));
-
-                        documents.put(index, newVector);
                     }
+                    documents.put(index, newVector);
                 }
             }
         } catch (IOException ex) {
@@ -109,18 +108,13 @@ public class DocumentCollection implements Serializable {
         return Arrays.stream(noiseWordArray).anyMatch(noise -> noise.equals(word));
     }
 
-    public Set<Map.Entry<Integer, TextVector>> getEntrySet() {
-        return documents.entrySet();
-    }
-
     public int getDocumentFrequency(String term) {
         return getEntrySet().stream().mapToInt(vec -> vec.getValue().contains(term) ? 1 : 0).sum();
     }
 
-    public Collection<TextVector> getDocuments() {
-        return documents.values();
+    public Set<Map.Entry<Integer, TextVector>> getEntrySet() {
+        return documents.entrySet();
     }
-
 
     public void makeTextVector(String[] elements) {
         TextVector vector = useDocVec ? new DocumentVector() : new QueryVector();
@@ -137,7 +131,6 @@ public class DocumentCollection implements Serializable {
         documents.put(currentIndex++, vec);
     }
 
-
     public TextVector getDocumentById(int id) {
         return documents.getOrDefault(id, useDocVec ? new DocumentVector() : new QueryVector());
     }
@@ -146,6 +139,10 @@ public class DocumentCollection implements Serializable {
         return getDocuments().stream()
                 .mapToInt(vec -> vec.getTotalWordCount())
                 .average().getAsDouble();
+    }
+
+    public Collection<TextVector> getDocuments() {
+        return documents.values();
     }
 
     public int getSize() {

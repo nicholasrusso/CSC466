@@ -15,13 +15,13 @@ public class DocumentVector extends TextVector {
     }
 
     @Override
-    public double getNormalizedFrequency(String word) {
-        return ((double) rawVector.get(word)) / getHighestRawFrequency();
+    public Set<Map.Entry<String, Double>> getNormalizedVectorEntrySet() {
+        return normalizedVector.entrySet();
     }
 
     @Override
-    public Set<Map.Entry<String, Double>> getNormalizedVectorEntrySet() {
-        return normalizedVector.entrySet();
+    public double getNormalizedFrequency(String word) {
+        return normalizedVector.getOrDefault(word, 0.0);
     }
 
     @Override
@@ -31,16 +31,26 @@ public class DocumentVector extends TextVector {
         });
     }
 
-
     private double TfIdf(Map.Entry<String, Integer> term, DocumentCollection dc) {
         double df = dc.getDocumentFrequency(term.getKey());
         double x = df > 0 ? dc.getSize() / df : 0;
-        return getNormalizedFrequency(term.getKey()) * log2(x);
+        return computeTermFrequency(term.getKey()) * log2(x);
     }
 
+    private double computeTermFrequency(String word) {
+        int highestRawFrequency = getHighestRawFrequency();
+
+        if (highestRawFrequency <= 0) {
+            return 0;
+        }
+
+        return ((double) rawVector.getOrDefault(word, 0)) / highestRawFrequency;
+    }
 
     private double log2(double x) {
-        if (x > 0) {return Math.log(x) / Math.log(2);}
+        if (x > 0) {
+            return Math.log(x) / Math.log(2);
+        }
 
         return 0;
     }

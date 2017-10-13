@@ -49,8 +49,11 @@ public abstract class TextVector implements Serializable {
     }
 
     public int getHighestRawFrequency() {
-        return rawVector.values().stream()
-                .max((a, b) -> a.longValue() > b.longValue() ? 1 : -1).get();
+        if (rawVector.isEmpty()) {
+            return 0;
+        }
+
+        return rawVector.values().stream().max((a, b) -> a.longValue() > b.longValue() ? 1 : -1).get();
     }
 
     public String getMostFrequentWord() {
@@ -63,6 +66,8 @@ public abstract class TextVector implements Serializable {
                 .mapToDouble(term -> Math.pow(term.getValue(), 2)).sum();
         return Math.sqrt(ssDist);
     }
+
+    public abstract Set<Map.Entry<String, Double>> getNormalizedVectorEntrySet();
 
     public ArrayList<Integer> findClosestDocuments(DocumentCollection documents, DocumentDistance distanceAlg) {
         PriorityQueue<Map.Entry<Integer, Double>> top20 = new PriorityQueue<>(20, (o2, o1) -> o2.getValue() >
@@ -79,8 +84,8 @@ public abstract class TextVector implements Serializable {
 
         ArrayList<Integer> topIDs = new ArrayList<>();
 
-        while(top20.iterator().hasNext()) {
-            Map.Entry<Integer, Double> v  = top20.poll();
+        while (top20.iterator().hasNext()) {
+            Map.Entry<Integer, Double> v = top20.poll();
             topIDs.add(v.getKey());
             System.out.println(v.getValue());
         }
@@ -89,12 +94,17 @@ public abstract class TextVector implements Serializable {
         return topIDs;
     }
 
-
     public abstract double getNormalizedFrequency(String word);
 
-    public abstract Set<Map.Entry<String, Double>> getNormalizedVectorEntrySet();
-
     public abstract void normalize(DocumentCollection dc);
+
+    @Override
+    public int hashCode() {
+        int result = rawVector != null ? rawVector.hashCode() : 0;
+        result = 31 * result + distinctCount;
+        result = 31 * result + totalCount;
+        return result;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -106,13 +116,5 @@ public abstract class TextVector implements Serializable {
         if (distinctCount != vector.distinctCount) return false;
         if (totalCount != vector.totalCount) return false;
         return rawVector != null ? rawVector.equals(vector.rawVector) : vector.rawVector == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = rawVector != null ? rawVector.hashCode() : 0;
-        result = 31 * result + distinctCount;
-        result = 31 * result + totalCount;
-        return result;
     }
 }

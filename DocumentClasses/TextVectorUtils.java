@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 /**
  * Methods to operate on TextVector's HashMaps.
- *
+ * <p>
  * Created by cgels on 10/11/17.
  */
-public class MapUtils {
+public class TextVectorUtils {
 
 
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueAscending(Map<K, V> map) {
