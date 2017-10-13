@@ -69,35 +69,33 @@ public abstract class TextVector implements Serializable {
     }
 
     public abstract Set<Map.Entry<String, Double>> getNormalizedVectorEntrySet();
+    public abstract double getNormalizedFrequency(String word);
+    public abstract void normalize(DocumentCollection dc);
 
     public ArrayList<Integer> findClosestDocuments(DocumentCollection documents, DocumentDistance distanceAlg) {
-        PriorityQueue<Map.Entry<Integer, Double>> top20 = new PriorityQueue<>(20, (o2, o1) -> o2.getValue() >
-                o1.getValue() ? 1 : -1);
+        Map<Integer, Double> docDistances = new HashMap<>(documents.getSize());
+        ArrayList<Integer> top20 = new ArrayList<>(20);
 
-        documents.getEntrySet().stream().forEach(term -> {
-            double dist = distanceAlg.findDistance(this, term.getValue(), documents);
-
-            if (top20.size() >= 20) {
-                top20.poll();
+        for (Map.Entry<Integer, TextVector> doc : documents.getEntrySet()) {
+            double dist = 0.0;
+            if (!doc.getValue().getNormalizedVectorEntrySet().isEmpty()) {
+                dist = distanceAlg.findDistance(this, doc.getValue(), documents);
             }
-            top20.offer(new AbstractMap.SimpleEntry<Integer, Double>(term.getKey(), dist));
-        });
 
-        ArrayList<Integer> topIDs = new ArrayList<>();
-
-        while (top20.iterator().hasNext()) {
-            Map.Entry<Integer, Double> v = top20.poll();
-            topIDs.add(v.getKey());
-            System.out.println(v.getValue());
+            docDistances.put(doc.getKey(), dist);
         }
 
-        topIDs.sort(Collections.reverseOrder());
-        return topIDs;
+        Map<Integer, Double> ranked = TextVectorUtils.sortByValueDescending(docDistances);
+
+        ranked.entrySet().stream().forEach(entry -> {
+            if (top20.size() < 20) {
+                top20.add(entry.getKey());
+            }
+        });
+
+        return top20;
     }
 
-    public abstract double getNormalizedFrequency(String word);
-
-    public abstract void normalize(DocumentCollection dc);
 
     @Override
     public int hashCode() {

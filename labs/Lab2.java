@@ -18,7 +18,6 @@ public class Lab2 {
     public static DocumentCollection queries;
 
     public static void main(String args[]) {
-//        documents = new DocumentCollection("./labs/documents.txt");
         try (ObjectInputStream is = new ObjectInputStream(
                 new FileInputStream(
                         new File("./files/docvector")))) {
@@ -28,10 +27,10 @@ public class Lab2 {
         }
 
 
-        queries = new DocumentCollection("./labs/queries.txt", "queries");
+        queries = new DocumentCollection("labs/queries.txt", "queries");
 
         documents.normalize(documents);
-        queries.normalize(queries);
+        queries.normalize(documents);
 
 
         ArrayList<ArrayList<Integer>> queryResults = new ArrayList<>();
@@ -39,8 +38,13 @@ public class Lab2 {
                 .forEach(query ->
                     queryResults.add(query.getValue().findClosestDocuments(documents, new CosineDistance())));
 
-        StringBuilder sb = new StringBuilder();
-        queryResults.get(0).stream().forEach(id -> sb.append(id +  ","));
-        System.out.println(sb.toString());
+        int qID = 1;
+        for (ArrayList<Integer> top20 : queryResults) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("Query %d: ", qID));
+            sb.append(top20.toString());
+            System.out.println(sb.toString());
+            qID++;
+        }
     }
 }
