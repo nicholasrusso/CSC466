@@ -37,13 +37,6 @@ public class DocumentCollection implements Serializable {
     private int currentIndex = 1;
     private int maxDocFreq = 0;
 
-    public DocumentCollection(String vectorType) {
-        this.vectorType = vectorType;
-        useDocVec = vectorType.equals("document");
-
-        documents = new HashMap<>();
-        docFreqs = new HashMap<>();
-    }
 
 
     public DocumentCollection(String dataFilePath, String vectorType) {
@@ -53,7 +46,10 @@ public class DocumentCollection implements Serializable {
         documents = new HashMap<>();
         docFreqs = new HashMap<>();
 
-        digestFile(dataFilePath);
+        if (dataFilePath != null && !dataFilePath.equals("")) {
+            digestFile(dataFilePath);
+        }
+
     }
 
     private void digestFile(String dataFilePath) {

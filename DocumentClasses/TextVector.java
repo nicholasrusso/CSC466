@@ -61,6 +61,7 @@ public abstract class TextVector implements Serializable {
                 .max((a, b) -> a.getValue() > b.getValue() ? 1 : -1).get().getKey();
     }
 
+
     public double getL2Norm() {
         double ssDist = getNormalizedVectorEntrySet().stream()
                 .mapToDouble(term -> Math.pow(term.getValue(), 2)).sum();
