@@ -9,19 +9,14 @@ public class CosineDistance implements DocumentDistance {
 
     @Override
     public double findDistance(TextVector query, TextVector document, DocumentCollection documents) {
-        double QdotD = 0.0;
+        double qDotD = 0.0;
 
         for (Map.Entry<String, Double> qEntry : query.getNormalizedVectorEntrySet()) {
-
-            for (Map.Entry<String, Double> dEntry : document.getNormalizedVectorEntrySet()) {
-
-                if (dEntry.getKey().equals(qEntry.getKey())) {
-                    QdotD += dEntry.getValue() * qEntry.getValue();
-                }
+            if (document.contains(qEntry.getKey())) {
+                qDotD += qEntry.getValue() * document.getNormalizedFrequency(qEntry.getKey());
             }
-
         }
 
-        return QdotD / (query.getL2Norm() * document.getL2Norm());
+        return qDotD / (query.getL2Norm() * document.getL2Norm());
     }
 }

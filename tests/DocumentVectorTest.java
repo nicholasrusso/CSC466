@@ -101,21 +101,37 @@ public class DocumentVectorTest {
 
 
     @Test
-    public void testDistance() throws Exception {
+    public void testCosineDistance() throws Exception {
         documents.normalize(documents);
         DocumentDistance func = new CosineDistance();
         assertEquals(0.5248, func.findDistance(vector, vector3, documents), epsilon);
     }
 
     @Test
-    public void testRank() throws Exception {
+    public void testOkapiDistance() throws Exception {
         documents.normalize(documents);
+        DocumentDistance func = new OkapiDistance();
+        assertEquals(-3.7, func.findDistance(vector, vector3, documents), epsilon);
+    }
+
+    @Test
+    public void testFindClosestDocuments() throws Exception {
+        documents.normalize(documents);
+        ArrayList<Integer> expected = new ArrayList<Integer>();
+        expected.add(1);
+        expected.add(3);
+        expected.add(2);
 
         TextVector query = documents.getDocumentById(1);
 
         ArrayList<Integer> result = query.findClosestDocuments(documents, new CosineDistance());
 
-        System.out.print(result);
+        assertEquals(expected.size(), result.size());
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(expected.get(i), result.get(i));
+        }
+
+
     }
 
 }
