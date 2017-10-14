@@ -13,6 +13,7 @@ public class Lab4 {
     public static void main(String args[]) {
         DirectedGraph graph = new DirectedGraph("./labs/graph.txt");
         System.out.println(String.format("Node Count: %d", graph.nodeCount()));
+        System.out.println(String.format("Edge Count: %d", graph.getEdgeCount()));
     }
 
 

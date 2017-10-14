@@ -7,9 +7,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * Representation of a  Directed graph that allows multiple edges between any 2 nodes (A --> B) and allows loops (A --> A)
  * Created by cgels on 10/14/17.
  */
 public class DirectedGraph {
+    int edgeCount;
     Set<Integer> nodes;
     // Node ID -> List of incoming Nodes -- (indegree(ID) = adjacency.get(ID).size()
     Map<Integer, ArrayList<Integer>> adjacencyList;
@@ -20,6 +22,7 @@ public class DirectedGraph {
      * @param filePath - if null, instantiates totally empty graph.
      * */
     public DirectedGraph(String filePath) {
+        edgeCount = 0;
         nodes = new TreeSet<>();
         adjacencyList = new HashMap<>();
         outDegrees = new HashMap<>();
@@ -28,7 +31,8 @@ public class DirectedGraph {
     }
 
     /**
-     * Read directed graph from a file where each line follows the format: fromNodeID, unused data, toNodeID, unused data.
+     * Read directed graph from a file where each line specifies an edge which follows the format:
+     *          fromNodeID, unused data, toNodeID, unused data.
      * */
     private void loadGraphFromFile(String filePath) {
         Iterator<String> graphData;
@@ -61,10 +65,7 @@ public class DirectedGraph {
      * Return the total number of directed edges in the graph.
      * */
     public int getEdgeCount() {
-        return adjacencyList.keySet()
-                            .stream()
-                            .mapToInt(nodeId -> getIncomingNodes(nodeId).size())
-                            .sum();
+        return edgeCount;
     }
 
 
@@ -92,6 +93,7 @@ public class DirectedGraph {
 
     /**
      * Adds directed edge between 'fromNode' --> 'toNode' to adjacency list and updates outdegrees.
+     * Does not check if an edge between 2 nodes already exists.
      * */
     public void addEdge(Integer fromNode, Integer toNode) {
         // add any new nodes before created an edge between them
@@ -103,6 +105,7 @@ public class DirectedGraph {
         incomingNodes.add(fromNode);
         adjacencyList.put(toNode, incomingNodes);
         outDegrees.put(fromNode, getOutdegree(fromNode) + 1);
+        edgeCount++;
     }
 
     /**
