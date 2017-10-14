@@ -16,7 +16,7 @@ public class DocumentCollectionTest {
 
     @Before
     public void setup() {
-        docs = new DocumentCollection(null,"document");
+        docs = new DocumentCollection(null, "document");
         docs.makeTextVector(new String[]{"test", "test", "rest", "test"});
         docs.makeTextVector(new String[]{"test", "zest", "quest", "zest"});
         docs.makeTextVector(new String[]{"test", "quest", "test", "rest"});
@@ -34,7 +34,10 @@ public class DocumentCollectionTest {
         }
 
         TextVector result = docs.getDocumentById(3);
-        int matchCount = result.getRawVectorEntrySet().stream().mapToInt(ele -> actual.contains(ele.getKey()) ? 1 : 0).sum();
+        int matchCount = result.getRawVectorEntrySet()
+                               .stream()
+                               .mapToInt(ele -> actual.contains(ele.getKey()) ? 1 : 0)
+                               .sum();
         assertEquals(3, matchCount);
     }
 
@@ -56,7 +59,8 @@ public class DocumentCollectionTest {
 
     @Test
     public void getMaxDocFrequency() throws Exception {
-        assertEquals("test", docs.getHighestDocumentFrequencyTerm().getKey());
+        assertEquals("test", docs.getHighestDocumentFrequencyTerm()
+                                 .getKey());
     }
 
 }

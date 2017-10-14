@@ -38,7 +38,6 @@ public class DocumentCollection implements Serializable {
     private int maxDocFreq = 0;
 
 
-
     public DocumentCollection(String dataFilePath, String vectorType) {
         this.vectorType = vectorType;
         useDocVec = vectorType.equals("document");
@@ -65,11 +64,14 @@ public class DocumentCollection implements Serializable {
             int index = 0;
             boolean body = false;
 
-            Iterator<String> tokenLists = Files.lines(Paths.get(dataPath)).collect(Collectors.toList()).iterator();
+            Iterator<String> tokenLists = Files.lines(Paths.get(dataPath))
+                                               .collect(Collectors.toList())
+                                               .iterator();
 
 
             while (tokenLists.hasNext()) {
-                String[] curTokens = tokenLists.next().split(" ");
+                String[] curTokens = tokenLists.next()
+                                               .split(" ");
                 if (".I".equals(curTokens[0])) {
                     index = Integer.parseInt(curTokens[1]);
                 }
@@ -88,9 +90,10 @@ public class DocumentCollection implements Serializable {
                         index = Integer.parseInt(flagTokens[1]);
                     } else {
                         Arrays.stream(bodyTokens)
-                                .map(term -> term.toLowerCase().trim())
-                                .filter(term -> !isNoiseWord(term) && term.length() > 1)
-                                .forEach(term -> newVector.add(term));
+                              .map(term -> term.toLowerCase()
+                                               .trim())
+                              .filter(term -> !isNoiseWord(term) && term.length() > 1)
+                              .forEach(term -> newVector.add(term));
                     }
                     documents.put(index, newVector);
                 }
@@ -101,11 +104,15 @@ public class DocumentCollection implements Serializable {
     }
 
     private boolean isNoiseWord(String word) {
-        return Arrays.stream(noiseWordArray).anyMatch(noise -> noise.equals(word));
+        return Arrays.stream(noiseWordArray)
+                     .anyMatch(noise -> noise.equals(word));
     }
 
     public int getDocumentFrequency(String term) {
-        return getEntrySet().stream().mapToInt(vec -> vec.getValue().contains(term) ? 1 : 0).sum();
+        return getEntrySet().stream()
+                            .mapToInt(vec -> vec.getValue()
+                                                .contains(term) ? 1 : 0)
+                            .sum();
     }
 
     public Set<Map.Entry<Integer, TextVector>> getEntrySet() {
@@ -133,8 +140,9 @@ public class DocumentCollection implements Serializable {
 
     public double getAverageDocumentLength() {
         return getDocuments().stream()
-                .mapToInt(vec -> vec.getTotalWordCount())
-                .average().getAsDouble();
+                             .mapToInt(vec -> vec.getTotalWordCount())
+                             .average()
+                             .getAsDouble();
     }
 
     public Collection<TextVector> getDocuments() {
@@ -155,7 +163,8 @@ public class DocumentCollection implements Serializable {
             }
         }
 
-        System.out.println(Collections.max(docFreqs.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).toString());
+        System.out.println(Collections.max(docFreqs.entrySet(), Comparator.comparingInt(Map.Entry::getValue))
+                                      .toString());
         return Collections.max(docFreqs.entrySet(), Comparator.comparingInt(Map.Entry::getValue));
     }
 
@@ -175,16 +184,22 @@ public class DocumentCollection implements Serializable {
 
     public int getTotalDistinctWordCount() {
         return getEntrySet().stream()
-                .mapToInt(vec -> vec.getValue().getDistinctWordCount()).sum();
+                            .mapToInt(vec -> vec.getValue()
+                                                .getDistinctWordCount())
+                            .sum();
     }
 
     public int getTotalWordCount() {
         return getEntrySet().stream()
-                .mapToInt(vec -> vec.getValue().getTotalWordCount()).sum();
+                            .mapToInt(vec -> vec.getValue()
+                                                .getTotalWordCount())
+                            .sum();
     }
 
     public void normalize(DocumentCollection dc) {
-        getEntrySet().stream().forEach(vec -> vec.getValue().normalize(dc));
+        getEntrySet().stream()
+                     .forEach(vec -> vec.getValue()
+                                        .normalize(dc));
     }
 }
 

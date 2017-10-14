@@ -1,18 +1,10 @@
 import DocumentClasses.CosineDistance;
 import DocumentClasses.DocumentCollection;
-import DocumentClasses.QueryVector;
-import DocumentClasses.TextVector;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 /**
  * Created by cgels on 9/19/17.
@@ -37,9 +29,11 @@ public class Lab2 {
 
 
         ArrayList<ArrayList<Integer>> queryResults = new ArrayList<>();
-        queries.getEntrySet().stream()
-                .forEach(query ->
-                    queryResults.add(query.getValue().findClosestDocuments(documents, new CosineDistance())));
+        queries.getEntrySet()
+               .stream()
+               .forEach(query ->
+                                queryResults.add(query.getValue()
+                                                      .findClosestDocuments(documents, new CosineDistance())));
 
 
         int qID = 1;

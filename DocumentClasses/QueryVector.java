@@ -23,7 +23,7 @@ public class QueryVector extends TextVector {
     @Override
     public void normalize(DocumentCollection dc) {
         getRawVectorEntrySet().stream()
-                .forEach(termEntry -> normalizedVector.put(termEntry.getKey(), TfIdf(termEntry, dc)));
+                              .forEach(termEntry -> normalizedVector.put(termEntry.getKey(), TfIdf(termEntry, dc)));
     }
 
     private double TfIdf(Map.Entry<String, Integer> term, DocumentCollection dc) {

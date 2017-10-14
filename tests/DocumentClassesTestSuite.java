@@ -1,9 +1,7 @@
 package tests;
 
-import DocumentClasses.DocumentCollection;
-import DocumentClasses.DocumentVector;
-import org.junit.runners.Suite;
 import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * Run Vector tests pertaining to Docme package.

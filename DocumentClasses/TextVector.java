@@ -1,7 +1,10 @@
 package DocumentClasses;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by cgels on 9/14/17.
@@ -53,23 +56,32 @@ public abstract class TextVector implements Serializable {
             return 0;
         }
 
-        return rawVector.values().stream().max((a, b) -> a.longValue() > b.longValue() ? 1 : -1).get();
+        return rawVector.values()
+                        .stream()
+                        .max((a, b) -> a.longValue() > b.longValue() ? 1 : -1)
+                        .get();
     }
 
     public String getMostFrequentWord() {
-        return rawVector.entrySet().stream()
-                .max((a, b) -> a.getValue() > b.getValue() ? 1 : -1).get().getKey();
+        return rawVector.entrySet()
+                        .stream()
+                        .max((a, b) -> a.getValue() > b.getValue() ? 1 : -1)
+                        .get()
+                        .getKey();
     }
 
 
     public double getL2Norm() {
         double ssDist = getNormalizedVectorEntrySet().stream()
-                .mapToDouble(term -> Math.pow(term.getValue(), 2)).sum();
+                                                     .mapToDouble(term -> Math.pow(term.getValue(), 2))
+                                                     .sum();
         return Math.sqrt(ssDist);
     }
 
     public abstract Set<Map.Entry<String, Double>> getNormalizedVectorEntrySet();
+
     public abstract double getNormalizedFrequency(String word);
+
     public abstract void normalize(DocumentCollection dc);
 
     public ArrayList<Integer> findClosestDocuments(DocumentCollection documents, DocumentDistance distanceAlg) {
@@ -78,7 +90,9 @@ public abstract class TextVector implements Serializable {
 
         for (Map.Entry<Integer, TextVector> doc : documents.getEntrySet()) {
             double dist = 0.0;
-            if (!doc.getValue().getNormalizedVectorEntrySet().isEmpty()) {
+            if (!doc.getValue()
+                    .getNormalizedVectorEntrySet()
+                    .isEmpty()) {
                 dist = distanceAlg.findDistance(this, doc.getValue(), documents);
             }
 
@@ -87,11 +101,13 @@ public abstract class TextVector implements Serializable {
 
         Map<Integer, Double> ranked = TextVectorUtils.sortByValueDescending(docDistances);
 
-        ranked.entrySet().stream().forEach(entry -> {
-            if (top20.size() < 20) {
-                top20.add(entry.getKey());
-            }
-        });
+        ranked.entrySet()
+              .stream()
+              .forEach(entry -> {
+                  if (top20.size() < 20) {
+                      top20.add(entry.getKey());
+                  }
+              });
 
         return top20;
     }

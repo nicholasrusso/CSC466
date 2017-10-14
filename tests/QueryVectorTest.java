@@ -41,7 +41,7 @@ public class QueryVectorTest {
         vector3.add("best");
         vector3.add("pest");
 
-        documents = new DocumentCollection("","query");
+        documents = new DocumentCollection("", "query");
         documents.addTextVector(vector);
         documents.addTextVector(vector2);
         documents.addTextVector(vector3);

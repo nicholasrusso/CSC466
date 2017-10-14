@@ -26,9 +26,10 @@ public class DocumentVector extends TextVector {
 
     @Override
     public void normalize(DocumentCollection dc) {
-        getRawVectorEntrySet().stream().forEach(termEntry -> {
-            normalizedVector.put(termEntry.getKey(), TfIdf(termEntry, dc));
-        });
+        getRawVectorEntrySet().stream()
+                              .forEach(termEntry -> {
+                                  normalizedVector.put(termEntry.getKey(), TfIdf(termEntry, dc));
+                              });
     }
 
     private double TfIdf(Map.Entry<String, Integer> term, DocumentCollection dc) {
