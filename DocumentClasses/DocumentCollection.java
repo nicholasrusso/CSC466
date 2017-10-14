@@ -5,13 +5,20 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Created by cgels on 9/14/17.
  */
 public class DocumentCollection implements Serializable {
-    public static String noiseWordArray[] = {"", "a", "about", "above", "all", "along",
+    private HashMap<Integer, TextVector> documents;
+    private HashMap<String, Integer> documentFrequencies;
+    private String dataPath;
+    private boolean useDocVec = true;
+    int currentIndex;
+
+    public static final String standardNoiseWordArray[] = {"", "a", "about", "above", "all", "along",
             "also", "although", "am", "an", "and", "any", "are", "aren't", "as", "at",
             "be", "because", "been", "but", "by", "can", "cannot", "could", "couldn't",
             "did", "didn't", "do", "does", "doesn't", "e.g.", "either", "etc", "etc.",
@@ -29,21 +36,14 @@ public class DocumentCollection implements Serializable {
             "we", "were", "what", "when", "where", "whereby", "wherein", "whether",
             "which", "while", "who", "whom", "whose", "why", "with", "without",
             "would", "you", "your", "yours", "yes"};
-    private String vectorType;
-    private boolean useDocVec = true;
-    private HashMap<Integer, TextVector> documents;
-    private HashMap<String, Integer> docFreqs;
-    private String dataPath;
-    private int currentIndex = 1;
-    private int maxDocFreq = 0;
 
 
-    public DocumentCollection(String dataFilePath, String vectorType) {
-        this.vectorType = vectorType;
-        useDocVec = vectorType.equals("document");
+    public DocumentCollection(String dataFilePath, String docType) {
+        this.useDocVec = docType.equals("document");
+        this.currentIndex = 1;
 
-        documents = new HashMap<>();
-        docFreqs = new HashMap<>();
+        this.documents = new HashMap<>();
+        this.documentFrequencies = new HashMap<>();
 
         if (dataFilePath != null && !dataFilePath.equals("")) {
             digestFile(dataFilePath);
@@ -59,43 +59,39 @@ public class DocumentCollection implements Serializable {
     }
 
     private void processFile() {
-
+        // do not want to restructure tokenizer logic... set index to 0 instead of 1 at beginning :|
+        currentIndex = 0;
         try {
-            int index = 0;
-            boolean body = false;
+            boolean parsingTextBody = false;
 
             Iterator<String> tokenLists = Files.lines(Paths.get(dataPath))
                                                .collect(Collectors.toList())
                                                .iterator();
 
-
             while (tokenLists.hasNext()) {
-                String[] curTokens = tokenLists.next()
-                                               .split(" ");
-                if (".I".equals(curTokens[0])) {
-                    index = Integer.parseInt(curTokens[1]);
-                }
+                String[] curTokens = tokenLists.next().split(" ");
 
-                if (".W".equals(curTokens[0])) {
-                    body = true;
-                }
+                if (".I".equals(curTokens[0])) currentIndex++;
+                if (".W".equals(curTokens[0])) parsingTextBody = true;
 
                 TextVector newVector = useDocVec ? new DocumentVector() : new QueryVector();
-                while (body && tokenLists.hasNext()) {
+
+                while (parsingTextBody && tokenLists.hasNext()) {
                     String line = tokenLists.next();
                     String[] flagTokens = line.split(" ");
                     String[] bodyTokens = line.split("[^a-zA-Z]+");
+
                     if (".I".equals(flagTokens[0])) {
-                        body = false;
-                        index = Integer.parseInt(flagTokens[1]);
-                    } else {
+                        parsingTextBody = false;
+                        currentIndex++;
+                    }
+                    else {
                         Arrays.stream(bodyTokens)
-                              .map(term -> term.toLowerCase()
-                                               .trim())
+                              .map(term -> term.toLowerCase().trim())
                               .filter(term -> !isNoiseWord(term) && term.length() > 1)
                               .forEach(term -> newVector.add(term));
                     }
-                    documents.put(index, newVector);
+                    documents.put(currentIndex, newVector);
                 }
             }
         } catch (IOException ex) {
@@ -104,7 +100,7 @@ public class DocumentCollection implements Serializable {
     }
 
     private boolean isNoiseWord(String word) {
-        return Arrays.stream(noiseWordArray)
+        return Arrays.stream(standardNoiseWordArray)
                      .anyMatch(noise -> noise.equals(word));
     }
 
@@ -119,6 +115,9 @@ public class DocumentCollection implements Serializable {
         return documents.entrySet();
     }
 
+    /**
+     * Injection point for testing which relies on conditional logic within DocumentCollection.
+     * */
     public void makeTextVector(String[] elements) {
         TextVector vector = useDocVec ? new DocumentVector() : new QueryVector();
         for (String term : elements) {
@@ -129,6 +128,7 @@ public class DocumentCollection implements Serializable {
         documents.put(currentIndex++, vector);
 
     }
+
 
     public void addTextVector(TextVector vec) {
         documents.put(currentIndex++, vec);
@@ -154,18 +154,18 @@ public class DocumentCollection implements Serializable {
     }
 
     public Map.Entry<String, Integer> getHighestDocumentFrequencyTerm() {
-        if (docFreqs.isEmpty()) {
+        if (documentFrequencies.isEmpty()) {
             for (TextVector doc : getDocuments()) {
                 for (Map.Entry<String, Integer> term : doc.getRawVectorEntrySet()) {
-                    int val = docFreqs.getOrDefault(term.getKey(), 0);
-                    docFreqs.put(term.getKey(), val + 1);
+                    int val = documentFrequencies.getOrDefault(term.getKey(), 0);
+                    documentFrequencies.put(term.getKey(), val + 1);
                 }
             }
         }
 
-        System.out.println(Collections.max(docFreqs.entrySet(), Comparator.comparingInt(Map.Entry::getValue))
+        System.out.println(Collections.max(documentFrequencies.entrySet(), Comparator.comparingInt(Map.Entry::getValue))
                                       .toString());
-        return Collections.max(docFreqs.entrySet(), Comparator.comparingInt(Map.Entry::getValue));
+        return Collections.max(documentFrequencies.entrySet(), Comparator.comparingInt(Map.Entry::getValue));
     }
 
     public AbstractMap.SimpleEntry<String, Integer> getSingleHighestDocumentFrequency() {

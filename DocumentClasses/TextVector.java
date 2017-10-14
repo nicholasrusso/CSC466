@@ -11,8 +11,8 @@ import java.util.Set;
  */
 public abstract class TextVector implements Serializable {
     HashMap<String, Integer> rawVector;
-    private int distinctCount = 0;
-    private int totalCount = 0;
+    int distinctCount = 0;
+    int totalCount = 0;
 
     public TextVector() {
         rawVector = new HashMap<>();

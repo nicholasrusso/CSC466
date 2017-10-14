@@ -1,10 +1,10 @@
 import DocumentClasses.CosineDistance;
 import DocumentClasses.DocumentCollection;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cgels on 9/19/17.
@@ -28,21 +28,24 @@ public class Lab2 {
         queries.normalize(documents);
 
 
-        ArrayList<ArrayList<Integer>> queryResults = new ArrayList<>();
+        HashMap<Integer, ArrayList<Integer>> queryResults = new HashMap<>();
         queries.getEntrySet()
                .stream()
-               .forEach(query ->
-                                queryResults.add(query.getValue()
-                                                      .findClosestDocuments(documents, new CosineDistance())));
+               .forEach(query -> queryResults.put(query.getKey(),
+                                                 query.getValue().findClosestDocuments(documents, new CosineDistance())));
 
 
-        int qID = 1;
-        for (ArrayList<Integer> top20 : queryResults) {
+        for (Map.Entry<Integer, ArrayList<Integer>> searchResult : queryResults.entrySet()) {
             StringBuilder sb = new StringBuilder();
-            sb.append(String.format("Query %d: ", qID));
-            sb.append(top20.toString());
+            sb.append(String.format("Query %d: ", searchResult.getKey()));
+            sb.append(searchResult.getValue().toString());
             System.out.println(sb.toString());
-            qID++;
+        }
+
+        try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File("./files/queryResultsCosineSimilarity")))) {
+            os.writeObject(queryResults);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
         }
     }
 }

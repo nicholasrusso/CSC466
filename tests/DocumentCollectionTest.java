@@ -21,8 +21,6 @@ public class DocumentCollectionTest {
         docs.makeTextVector(new String[]{"test", "zest", "quest", "zest"});
         docs.makeTextVector(new String[]{"test", "quest", "test", "rest"});
         docs.makeTextVector(new String[]{"vest", "nest"});
-
-
     }
 
     @Test
