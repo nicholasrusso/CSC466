@@ -34,4 +34,5 @@ public class OkapiDistance implements DocumentDistance {
         }
         return dist;
     }
+
 }

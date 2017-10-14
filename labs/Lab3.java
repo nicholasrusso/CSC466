@@ -49,7 +49,8 @@ public class Lab3 {
 
 
         Map<Integer, ArrayList<Integer>> cosineSimilarities = computeSimilarities(new CosineDistance());
-        Map<Integer, ArrayList<Integer>> okapiSimilarities = computeSimilarities(new OkapiDistance());
+        Map<Integer, ArrayList<Integer>> okapiSimilarities = computeSimigit larities(new OkapiDistance());
+
         System.out.println(okapiSimilarities.get(1).toString());
 
         Map<Integer, ArrayList<Integer>> humanRanking = loadHumanRankings();
