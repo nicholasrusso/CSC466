@@ -60,6 +60,13 @@ public class DirectedGraph {
         return nodes.size();
     }
 
+    /**
+     * Returns set of nodes.
+     */
+    public Iterator<Integer> nodeIterator() {
+        return nodes.iterator();
+    }
+
 
     /**
      * Return the total number of directed edges in the graph.
