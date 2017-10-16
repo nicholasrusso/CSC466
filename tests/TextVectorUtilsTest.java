@@ -1,6 +1,6 @@
 package tests;
 
-import DocumentClasses.TextVectorUtils;
+import DocumentClasses.MapUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class TextVectorUtilsTest {
             testMap.put("SomeString" + random.nextInt(), random.nextInt());
         }
 
-        testMap = TextVectorUtils.sortByValueAscending(testMap);
+        testMap = MapUtilities.sortByValueAscending(testMap);
         Assert.assertEquals(1000, testMap.size());
 
         Integer previous = null;
@@ -46,7 +46,7 @@ public class TextVectorUtilsTest {
             testMap.put("SomeString" + random.nextInt(), random.nextInt());
         }
 
-        testMap = TextVectorUtils.sortByValueDescending(testMap);
+        testMap = MapUtilities.sortByValueDescending(testMap);
         Assert.assertEquals(1000, testMap.size());
 
         Integer previous = null;

@@ -99,7 +99,7 @@ public abstract class TextVector implements Serializable {
             docDistances.put(doc.getKey(), dist);
         }
 
-        Map<Integer, Double> ranked = TextVectorUtils.sortByValueDescending(docDistances);
+        Map<Integer, Double> ranked = MapUtilities.sortByValueDescending(docDistances);
 
         ranked.entrySet()
               .stream()
