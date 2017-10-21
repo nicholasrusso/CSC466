@@ -4,6 +4,7 @@ import GraphClasses.DirectedGraph;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -42,6 +43,13 @@ public class DirectedGraphTest {
         graph.addEdge(1, 2);
         assertTrue(graph.containsDirectedEdge(1, 2));
         assertFalse(graph.containsDirectedEdge(2, 1));
+
+        ArrayList<Integer> incomingNodes = graph.getIncomingNodes(2);
+        ArrayList<Integer> expected = new ArrayList<>();
+        expected.add(1);
+
+        assertEquals(1, incomingNodes.size());
+        assertEquals(expected.get(0), incomingNodes.get(0));
 
         // check that directed graph can have bidirectional relationships
         graph.addEdge(2, 1);

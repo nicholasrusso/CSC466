@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Representation of a  Directed graph that allows multiple edges between any 2 nodes (A --> B) and allows loops (A --> A)
@@ -63,8 +64,8 @@ public class DirectedGraph {
     /**
      * Returns set of nodes.
      */
-    public Iterator<Integer> nodeIterator() {
-        return nodes.iterator();
+    public Stream<Integer> nodeStream() {
+        return nodes.stream();
     }
 
 
