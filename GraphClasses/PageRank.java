@@ -119,7 +119,8 @@ public class PageRank {
 
 
     /**
-     * Carries out 1 step in page rank power iteration algorithm and returns difference in distance from previous iteration.
+     * Carries out 1 step in page rank power iteration algorithm.
+     * @return difference in distance from previous iteration.
      * */
     public double iterateOnce() {
         pageRankNew = pageRank_next();
@@ -134,8 +135,6 @@ public class PageRank {
             System.out.println(distance);
         }
 
-
-
         return diff;
     }
 
@@ -146,13 +145,13 @@ public class PageRank {
     public int iterateToConvergence() {
         // compute first
         double diff = iterateOnce();
-
         while (diff > convergenceThreshold) {
             if (numIterations == maxIterations) {
-                if (verbose) System.out.println(String.format("Did not converge after %d iterations.", maxIterations));
+                if (verbose) {
+                    System.out.println(String.format("Did not converge after %d iterations.", maxIterations));
+                }
                 break;
             }
-
             diff = iterateOnce();
         }
 
