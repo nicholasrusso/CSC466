@@ -101,19 +101,17 @@ public class PageRank {
         perNodeDistances = new HashMap<>();
         double distance = 0.0;
 
-
         for (Map.Entry<Integer, Double> node : pageRankNew.entrySet()) {
             double dist_i = Math.abs(node.getValue() - pageRankOld.get(node.getKey()));
-            if (verbose) {
-                System.out.println(String.format("Diff for Node: %d", node.getKey()));
-                System.out.println(dist_i);
-            }
             distance += dist_i;
             perNodeDistances.put(node.getKey(), dist_i);
         }
+        pageRankNew.entrySet().stream();
+
 
         return distance;
     }
+
 
 
 
@@ -125,6 +123,7 @@ public class PageRank {
     public double iterateOnce() {
         pageRankNew = pageRank_next();
         double distance = findDistance(pageRankOld, pageRankNew);
+
         double diff = Math.abs(distance - prevDistance);
         prevDistance = distance;
         numIterations++; // increment internal counter
@@ -132,7 +131,11 @@ public class PageRank {
         pageRankOld = (HashMap<Integer, Double>) pageRankNew.clone(); // update variables for next iteration.
 
         if (verbose) { // if interval verbose flag set output distance
-            System.out.println(distance);
+            System.out.println("-----------------");
+            System.out.println(String.format("Iteration: %d, New - Old: %f", numIterations, distance));
+            System.out.println(getTopKDistances(20));
+            System.out.println(getTopKRankings(20));
+            System.out.println("-----------------");
         }
 
         return diff;
@@ -153,6 +156,7 @@ public class PageRank {
                 break;
             }
             diff = iterateOnce();
+
         }
 
         return numIterations;

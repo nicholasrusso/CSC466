@@ -18,11 +18,9 @@ public class Lab4 {
         System.out.println(String.format("Edge Count: %d", graph.getEdgeCount()));
 
         PageRank pr = new PageRank(graph);
-        System.out.println(pr.iterateOnce());
-        System.out.println(pr.getTopKRankings(20));
-        System.out.println(pr.getTopKDistances(20));
-
-//        System.out.print(pr.iterateUntilConverge(.00001));
+        pr.setVerbose(true);
+        pr.setConvergenceThreshold(0.001);
+        pr.iterateToConvergence();
 
     }
 
