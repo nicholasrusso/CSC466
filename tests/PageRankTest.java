@@ -5,6 +5,8 @@ import GraphClasses.PageRank;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 /**
@@ -28,13 +30,9 @@ public class PageRankTest {
 
 
         PageRank pr = new PageRank(g);
-//        pr.setVerbose(true);
-        // distance 1 - 0 = .45 (iteration 0 distance = 0)
         assertEquals(0.45, pr.iterateOnce(), .01);
-        // distance 2 - 1 = .405
-        assertEquals(.045, pr.iterateOnce(), .01);
-        // distance 3 - 2 = .3645
-        assertEquals(.0405, pr.iterateOnce(), .01 );
+        assertEquals(.405, pr.iterateOnce(), .01);
+        assertEquals(.3645, pr.iterateOnce(), .01 );
     }
 
     @Test
@@ -46,9 +44,20 @@ public class PageRankTest {
 
 
         PageRank pr = new PageRank(g);
-        pr.setConvergenceThreshold(.01);
+        pr.setConvergenceThreshold(.001);
 
         int iters = pr.iterateToConvergence();
+
+//        ArrayList<Integer> expected = new ArrayList<>();
+//        expected.add(0, )
+//        ArrayList<Integer> ranking = pr.getTopKRankings(4);
+//
+//        for (int i = 0; i < ranking.size(); i++) {
+//            assertEquals(expected.get(i), ranking.get(i));
+//        }
+
     }
+
+
 
 }

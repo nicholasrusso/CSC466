@@ -14,13 +14,14 @@ public class Lab4 {
 
     public static void main(String args[]) {
         final DirectedGraph graph = new DirectedGraph("./labs/graph.txt");
-        System.out.println(String.format("Node Count: %d", graph.nodeCount()));
-        System.out.println(String.format("Edge Count: %d", graph.getEdgeCount()));
 
         PageRank pr = new PageRank(graph);
-        pr.setVerbose(true);
         pr.setConvergenceThreshold(0.001);
-        pr.iterateToConvergence();
+        int numIter = pr.iterateToConvergence();
+
+        System.out.println(String.format("Iterations to converge: %d", numIter));
+        System.out.println("Top 20 Documents:");
+        System.out.println(pr.getTopKRankings(20));
 
     }
 

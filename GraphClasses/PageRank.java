@@ -123,11 +123,7 @@ public class PageRank {
     public double iterateOnce() {
         pageRankNew = pageRank_next();
         double distance = findDistance(pageRankOld, pageRankNew);
-
-        double diff = Math.abs(distance - prevDistance);
-        prevDistance = distance;
         numIterations++; // increment internal counter
-
         pageRankOld = (HashMap<Integer, Double>) pageRankNew.clone(); // update variables for next iteration.
 
         if (verbose) { // if interval verbose flag set output distance
@@ -138,7 +134,7 @@ public class PageRank {
             System.out.println("-----------------");
         }
 
-        return diff;
+        return distance;
     }
 
 
@@ -146,17 +142,13 @@ public class PageRank {
      * Iterates until difference in distance is < .0001 OR no convergence after MAX_ITERATIONS.
      * */
     public int iterateToConvergence() {
-        // compute first
-        double diff = iterateOnce();
-        while (diff > convergenceThreshold) {
+        while (iterateOnce() > convergenceThreshold) {
             if (numIterations == maxIterations) {
                 if (verbose) {
                     System.out.println(String.format("Did not converge after %d iterations.", maxIterations));
                 }
                 break;
             }
-            diff = iterateOnce();
-
         }
 
         return numIterations;
