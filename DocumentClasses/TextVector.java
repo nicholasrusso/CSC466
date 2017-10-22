@@ -90,8 +90,9 @@ public abstract class TextVector implements Serializable {
 
         for (Map.Entry<Integer, TextVector> doc : documents.getEntrySet()) {
             double dist = 0.0;
+
             if (!doc.getValue()
-                    .getNormalizedVectorEntrySet()
+                    .getRawVectorEntrySet()
                     .isEmpty()) {
                 dist = distanceAlg.findDistance(this, doc.getValue(), documents);
             }

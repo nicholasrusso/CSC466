@@ -33,10 +33,7 @@ public class Lab3 {
             cosineResults = computeSimilarities(new CosineDistance());
         }
 
-        if (okapiResults == null) okapiResults = computeSimilarities(new OkapiDistance());
-
-//        System.out.println("Okapi Distances for Query 1");
-//        getDistancesForQueryID(1, new OkapiDistance()).stream().forEach(dist -> System.out.println(dist));
+        okapiResults = computeSimilarities(new OkapiDistance());
 
         System.out.println(String.format("Cosine MAP = %f", computeMAP(humanRanking, cosineResults)));
         System.out.println(String.format("Okapi MAP = %f", computeMAP(humanRanking, okapiResults)));
