@@ -1,6 +1,9 @@
 package RuleMining;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by cgels on 10/21/17.
@@ -10,6 +13,23 @@ public class ItemSet{
 
     public ItemSet() {
         this.items = new ArrayList<>();
+    }
+
+    public ItemSet(List<Integer> items) {
+        this.items = new ArrayList<>();
+        this.items.addAll(items);
+    }
+
+    public ItemSet(ItemSet toCopy) {
+        this.items = new ArrayList<>(toCopy.items);
+    }
+
+    public ArrayList<Integer> getItems() {
+        return new ArrayList<>(items);
+    }
+
+    public Integer getItem(int index) {
+        return items.get(index);
     }
 
     public int size() {
@@ -34,11 +54,11 @@ public class ItemSet{
     }
 
 
+
+
     @Override
     public String toString() {
-        return "ItemSet{" +
-                "items=" + items +
-                '}';
+        return items.toString();
     }
 
     @Override
