@@ -1,5 +1,6 @@
 package RuleMining;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by cgels on 10/21/17.
  */
-public class ItemSet{
+public class ItemSet implements Serializable{
     private ArrayList<Integer> items;
 
     public ItemSet() {
