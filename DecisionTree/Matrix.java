@@ -64,7 +64,6 @@ public class Matrix {
     }
 
     private double findEntropyA(int attribute, ArrayList<Integer> rows) {
-//        HashMap<Integer, ArrayList<Integer>> partition = split(attribute, rows);
         double entropy = 0;
 
         for (Integer value : findDifferentValues(attribute, rows)) {
@@ -72,13 +71,6 @@ public class Matrix {
             entropy += ((D_j.size() * 1.0) / rows.size()) * findEntropy(D_j);
         }
 
-
-//        for (Map.Entry<Integer, ArrayList<Integer>> distinct : partition.entrySet()) {
-//            double frac = (distinct.getValue()
-//                                   .size() * 1.0) / rows.size();
-//
-//            entropy += frac * findEntropy(distinct.getValue());
-//        }
 
         return entropy;
     }
@@ -103,7 +95,6 @@ public class Matrix {
             total -= proportion * log2(proportion);
         }
 
-//        return findGain(attribute, rows);
         return findGain(attribute, rows) / total;
     }
 
@@ -111,7 +102,7 @@ public class Matrix {
     /**
      * returns the most common category for the dataset that is the defined by the specified rows.
      * */
-    public int findMostCommonValue(ArrayList<Integer> rows) {
+    public int findMostCommonCategory(ArrayList<Integer> rows) {
         TreeMap<Integer, Integer> categoryCount = new TreeMap<>();
         for (Integer r : rows) {
             int category = data[r][4];
@@ -119,6 +110,16 @@ public class Matrix {
         }
 
         return categoryCount.lastKey();
+    }
+
+    public int findMostCommonAttributeValue(int attribute, ArrayList<Integer> rows) {
+        TreeMap<Integer, Integer> valueCount = new TreeMap<>();
+        for (Integer r : rows) {
+            int v = data[r][4];
+            valueCount.put(v, valueCount.getOrDefault(v, 0) + 1);
+        }
+
+        return valueCount.lastKey();
     }
 
     /**
