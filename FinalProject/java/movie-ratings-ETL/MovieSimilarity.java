@@ -177,7 +177,7 @@ public class MovieSimilarity extends Configured implements Tool {
 //            context.write(new Text(name_i + ", " + name_j), new Text(String.valueOf(sim)));
             for (Text t:
                  values) {
-                context.write(key, t));
+                context.write(key, t);
 
             }
 //            context.write(key, new Text(String.valueOf(sim)));
