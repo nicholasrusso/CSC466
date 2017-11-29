@@ -35,25 +35,23 @@ public class MovieSimilarity extends Configured implements Tool {
         public void map(LongWritable key, Text value, Context context)
                 throws IOException, InterruptedException {
 
+            int numMovies = 9066;
+
             try {
                 JSONObject json = new JSONObject(value.toString());
                 JSONObject metadataObj;
-//                JSONObject nameObj;
 
                 Iterator<String> iter = json.keys();
                 Iterator<String> metaIter;
-//                Iterator<String> nIter;
 
-                String jsonKey;
-                String rKey;
-                String nKey;
+                String jsonKey; // stores current top-level json property key
+                String rKey; // stores current 2-nd level json property kety (meta data object)
 
                 String movieId = "";
                 String userRatings = "";
                 String pair;
-                String fName = "";
-                String lName = "";
                 String movieTitle = "";
+                String objId = "";
 
                 while (iter.hasNext()) {
                     jsonKey = iter.next();
@@ -65,35 +63,27 @@ public class MovieSimilarity extends Configured implements Tool {
                         while (metaIter.hasNext()) {
                             rKey = metaIter.next();
                             if (rKey.equals("title")) {
-//                                nameObj = new JSONObject(metadataObj.get(rKey).toString());
                                 movieTitle = metadataObj.get(rKey).toString();
-//                                nIter = nameObj.keys();
-//                                while (nIter.hasNext())
-//                                {
-//                                    nKey = nIter.next();
-//                                    if (nKey.equals("first"))
-//                                    {
-//                                        fName = nameObj.get(nKey).toString();
-//                                    }
-//                                    if (nKey.equals("last"))
-//                                    {
-//                                        lName = nameObj.get(nKey).toString();
-//                                    }
-//                                }
                             }
                         }
                     }
+
                     if (jsonKey.equals("ratings")) {
                         userRatings = json.get(jsonKey).toString();
                     }
-                    if (jsonKey.equals("movieId"))
+
+                    if (jsonKey.equals("imbdMovieId"))
                     {
                         movieId = json.get(jsonKey).toString();
                     }
 
+                    if (jsonKey.equals("objId"))
+                    {
+                        objId = json.get(jsonKey).toString();
+                    }
+
                 }
 
-//                movieTitle = fName + " " + lName;
                 if(movieTitle.equals("")) {
                     // for unknown titles... use the movie ID
                     movieTitle = movieId;
@@ -101,17 +91,18 @@ public class MovieSimilarity extends Configured implements Tool {
 
                 int i = Integer.valueOf(movieId);
 
-                for (int j = 1; j < 11; j++)
+                for (int j = 1; j < numMovies; j++)
                 {
                     if ( i < j)
                     {
-                        pair = movieId + ", " + String.valueOf(j);
-                        context.write(new Text(pair), new Text(userRatings + ";" +movieTitle));
+                        // index pair -- cannot use movie ids because not sequential!
+                        pair = objId + ", " + String.valueOf(j);
+                        context.write(new Text(pair), new Text(userRatings + ";" + movieId + ";" + movieTitle));
                     }
                     else if (i != j)
                     {
-                        pair = String.valueOf(j) + ", " + movieId;
-                        context.write(new Text(pair), new Text(userRatings + ";" + movieTitle));
+                        pair = String.valueOf(j) + ", " + objId;
+                        context.write(new Text(pair), new Text(userRatings + ";" + movieId + ";" + movieTitle));
                     }
                 }
 
@@ -175,9 +166,8 @@ public class MovieSimilarity extends Configured implements Tool {
 //
 //            double sim = numerator / (Math.sqrt(denom_i) * Math.sqrt(denom_j));
 //            context.write(new Text(name_i + ", " + name_j), new Text(String.valueOf(sim)));
-            for (Text t:
-                 values) {
-                context.write(key, t);
+            for (Text t: values) {
+                context.write(new Text(key), new Text(t));
 
             }
 //            context.write(key, new Text(String.valueOf(sim)));
