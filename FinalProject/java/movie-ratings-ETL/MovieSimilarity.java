@@ -84,12 +84,12 @@ public class MovieSimilarity extends Configured implements Tool {
 
                 }
 
-                if(movieTitle.equals("")) {
-                    // for unknown titles... use the movie ID
-                    movieTitle = movieId;
-                }
+//                if(movieTitle.equals("")) {
+//                    // for unknown titles... use the movie ID
+//                    movieTitle = movieId;
+//                }
 
-                int i = Integer.valueOf(movieId);
+                int i = Integer.valueOf(objId);
 
                 for (int j = 1; j < numMovies; j++)
                 {
