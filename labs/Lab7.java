@@ -76,6 +76,14 @@ public class Lab7 {
         Matrix m = new Matrix(data);
         int bestAttr = -1;
         double bestIGR = -1;
+
+        String indent = "";
+        int l = 0;
+        while (l < level) {
+            indent += "\t";
+            l++;
+        }
+
         //base case if no attributes then finished
         if (attributes.size() > 0) {
 
@@ -99,69 +107,20 @@ public class Lab7 {
         }
 
         if (bestIGR < .01) {
-            System.out.println(String.format("value is %d", m.findMostCommonCategory(rows)).toString());
+            System.out.println(String.format(indent + "value is %d", m.findMostCommonCategory(rows)).toString());
         }
         else {
 
             HashMap<Integer, ArrayList<Integer>> split = m.split(bestAttr, rows);
             attributes.remove(bestAttr);
             for (Map.Entry<Integer, ArrayList<Integer>> branch : split.entrySet()) {
-                StringBuilder sb = new StringBuilder();
-                // determine number of tabs
-                int i = 0;
-                while (i < level) {
-                    sb.append("\t");
-                    i++;
-                }
 
-                System.out.println(sb.append(String.format("When attribute %d has value %d\n",
+                System.out.println(indent + String.format("When attribute %d has value %d",
                                                            bestAttr + 1,
-                                                           branch.getKey()))
-                                     .toString());
+                                                           branch.getKey()));
                 printDecisionTree(data, attributes, branch.getValue(), level + 1, bestIGR);
             }
         }
-
-        // base cse if there is 1 attribute left then the rest if trivial
-
-        // base case if the IGR is below epsilon or difference between new and current is below epsilon then set to c
-
-
-        //otherwise iterate through the split on best attribute (max IGR)
-//
-//        // best attribute on which to split
-//
-//        HashMap<Integer, ArrayList<Integer>> split = m.split(best.getKey(), rows);
-//
-//        int attr = best.getKey();
-//        for (Map.Entry<Integer, ArrayList<Integer>> branch : split.entrySet()) {
-//            StringBuilder l1 = new StringBuilder();
-//            StringBuilder l2 = new StringBuilder();
-//            // determine number of tabs
-//            int i = 0;
-//            while (i < level) {
-//                l1.append("\t");
-//                l2.append("\t");
-//                i++;
-//            }
-//            l2.append("\t");
-//            l1.append(String.format("When Attribute %d has value %d", attr + 1, branch.getKey()));
-//            l2.append(String.format("category = %d", m.findMostCommonCategory(branch.getValue())));
-//
-//            System.out.println(l1.toString());
-//            System.out.println(l2.toString());
-//
-//            currentIGR = best.getValue();
-//            ArrayList<Integer> subsetAttributes = (ArrayList<Integer>) attributes.clone();
-//            subsetAttributes.remove(best.getKey());
-//
-////            if (branch.getValue()
-////                      .size() > 0) {
-//
-//                printDecisionTree(data, subsetAttributes, branch.getValue(), level + 1, currentIGR);
-////            }
-//
-//        }
 
     }
 }

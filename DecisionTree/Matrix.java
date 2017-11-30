@@ -9,12 +9,18 @@ public class Matrix {
     private int[][] data;
     public int numRows = 0;
     public int numCols = 0;
+    private ArrayList<Integer> rowIndices;
 
     public Matrix(int[][] matrix) {
         data = matrix;
 
         numRows = data.length;
         numCols = data[0].length;
+
+        rowIndices = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            rowIndices.add(i);
+        }
     }
 
     /***
@@ -56,7 +62,7 @@ public class Matrix {
 
         double entropy = 0;
         for (Integer c : categories) {
-            double pr_c = (1.0 * findFrequency(4, c, rows)) / rows.size();
+            double pr_c = (1.0 * findFrequency(numCols - 1, c, rows)) / rows.size();
             entropy -= pr_c * log2(pr_c);
         }
 
@@ -105,21 +111,11 @@ public class Matrix {
     public int findMostCommonCategory(ArrayList<Integer> rows) {
         TreeMap<Integer, Integer> categoryCount = new TreeMap<>();
         for (Integer r : rows) {
-            int category = data[r][4];
+            int category = data[r][numCols - 1];
             categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
         }
 
         return categoryCount.lastKey();
-    }
-
-    public int findMostCommonAttributeValue(int attribute, ArrayList<Integer> rows) {
-        TreeMap<Integer, Integer> valueCount = new TreeMap<>();
-        for (Integer r : rows) {
-            int v = data[r][4];
-            valueCount.put(v, valueCount.getOrDefault(v, 0) + 1);
-        }
-
-        return valueCount.lastKey();
     }
 
     /**
@@ -132,7 +128,7 @@ public class Matrix {
         for (Integer r : rows) {
             int attrVal = data[r][attribute];
 
-            ArrayList<Integer> currentRows = attrValueMap.getOrDefault(attrVal, new ArrayList<Integer>());
+            ArrayList<Integer> currentRows = attrValueMap.getOrDefault(attrVal, new ArrayList<>());
             currentRows.add(r);
             attrValueMap.put(attrVal, currentRows);
         }
@@ -147,4 +143,82 @@ public class Matrix {
         }
         return rtn;
     }
+
+    /**
+     * returns all the indices of all rows, e.g., 0,1,... up to the total number of rows -1
+     * */
+    public ArrayList<Integer> findAllRows() {
+        return (ArrayList<Integer>) rowIndices.clone();
+    }
+
+    /**
+     * returns the index of the category attribute
+     * */
+    public int getCategoryAttribute() {
+        return numCols - 1;
+    }
+
+
+    /**
+     * takes as input the values for a single row, e.g., 5,3,1,2 and the category, e.g. 2.
+     * Returns the probability that the row belongs to the category using the Naïve Bayesian model.
+     * */
+    public double findProb(int[] row, int category) {
+        double lambda = 1.0 / numRows;
+        int n_j = findFrequency(getCategoryAttribute(), category, findAllRows());
+        double prob = 1.0;
+
+        for (int attrIndex = 0; attrIndex < getCategoryAttribute(); attrIndex++) {
+            int n_ij = 0;
+            int a_i = row[attrIndex];
+            int m_i = findDifferentValues(attrIndex, findAllRows()).size();
+            for (Map.Entry<Integer, ArrayList<Integer>> a_j : split(attrIndex, findAllRows()).entrySet()) {
+                // if they have the same attribute value
+                if (a_j.getKey() == a_i) {
+                    // count the number of rows which also have the same class
+                    for (Integer idx : a_j.getValue()) {
+                        if (data[idx][getCategoryAttribute()] == category) {
+                            n_ij++;
+                        }
+                    }
+
+
+
+                }
+            }
+            prob *= (n_ij + lambda) / (n_j + lambda * m_i);
+        }
+
+
+        double p_ck =  0;
+        for(Map.Entry<Integer, ArrayList<Integer>> c: split(getCategoryAttribute(), findAllRows()).entrySet()) {
+            if (c.getKey() == category) {
+                p_ck = (1.0 * c.getValue()
+                               .size()) / numRows;
+            }
+        }
+
+
+
+        return p_ck * prob;
+    }
+
+
+    /**
+     * takes as input the values for a single row, e.g., 5,3,1,2.
+     * Returns the most probable category of the row using the Naïve Bayesian Model.
+     * */
+    public int findCategory(int[] row) {
+        HashMap<Integer, Double> catMap = new HashMap<>();
+        for (Integer category : findDifferentValues(getCategoryAttribute(), findAllRows())) {
+            double p = findProb(row, category);
+            catMap.put(category, p);
+        }
+
+        return Collections.max(catMap.entrySet(), Map.Entry.comparingByValue()).getKey();
+    }
+
+
+
+
 }
